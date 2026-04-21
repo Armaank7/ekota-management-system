@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Ekota Football Club</title>
+</head>
+<body>
+
+  <!-- Main hero section with logo, app title and login links -->
+  <section class="hero">
+    <img class="hero-logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+    <h1>Welcome to the Ekota Football Club Management App</h1>
+    <p>Squad management, match tracking, training sessions and performance analytics for Ekota Academy.</p>
+    <div class="hero-actions">
+      <a class="button" href="{% url 'Login' %}">Login</a>
+      <a class="button button-light" href="{% url 'StaffRegister' %}">Staff Register</a>
+    </div>
+    <div class="hero-note">Staff register is for new staff members only. Players log in above.</div>
+  </section>
+
+  <!-- Quick overview of the main parts of the system -->
+  <div class="page">
+    <p class="section-title">What the app covers</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+          </svg>
+        </div>
+        <div>
+          <h3>Player Management</h3>
+          <p>Add and update squad members, positions, and personal details. Staff can create player accounts and manage the full squad.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div>
+          <h3>Match Tracking</h3>
+          <p>Log fixtures, results, and individual player appearances. Track goals, assists, and minutes played across all competitions.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h3>Training Sessions</h3>
+          <p>Schedule sessions, record attendance, and add coaching notes. Players can view their own training session history.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </div>
+        <div>
+          <h3>Performance Analytics</h3>
+          <p>View goals, assists, appearances, and training attendance. Tables and Charts give a clear picture of player and club development over time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple footer shown at the bottom of the page -->
+  <footer class="page-footer">
+    <span>Ekota Football Club Management Portal</span>
+    <span>Made by Armaan Khan</span>
+  </footer>
+
+</body>
+</html>

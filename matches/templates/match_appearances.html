@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Match Appearances</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+        <div class="brand">
+          <div class="brand-title">Ekota Football Club</div>
+          <div class="brand-subtitle">Club Management Portal</div>
+        </div>
+      </div>
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-outline" style="color: #fff; border-color: rgba(255,255,255,0.5);">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page">
+    <p><a href="{% url 'StaffMatchesHub' %}">&larr; Back to Matches</a></p>
+    <h1>Appearances</h1>
+    <p class="subtitle">{{ match.opponent_name }}, {{ match.match_date|date:"d/m/Y" }}, {{ match.our_score }} - {{ match.opponent_score }}</p>
+    <p>Use the blank row at the bottom to add a new appearance.</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      {{ formset.management_form }}
+
+      <table>
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>Minutes Played</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for form in formset %}
+            <tr>
+              <td>{{ form.player }}</td>
+              <td>{{ form.goals }}</td>
+              <td>{{ form.assists }}</td>
+              <td>{{ form.minutes_played }}</td>
+              <td>{{ form.DELETE }}</td>
+              {{ form.id }}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <button type="submit" class="button" style="margin-top: 16px;">Save</button>
+    </form>
+
+  </div>
+
+</body>
+</html>

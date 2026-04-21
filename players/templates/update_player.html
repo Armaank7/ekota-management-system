@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Update Player</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+        <div class="brand">
+          <div class="brand-title">Ekota Football Club</div>
+          <div class="brand-subtitle">Club Management Portal</div>
+        </div>
+      </div>
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-outline" style="color: #fff; border-color: rgba(255,255,255,0.5);">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="container">
+    <p><a href="{% url 'StaffPlayersHub' %}">&larr; Back to Players</a></p>
+    <h1>Update Player</h1>
+    <p class="subtitle">{{ player.first_name }} {{ player.last_name }}</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+
+      <button type="submit" class="button">Save Changes</button>
+    </form>
+  </div>
+
+</body>
+</html>

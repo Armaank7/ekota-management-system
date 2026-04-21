@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Manage Players</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+        <div class="brand">
+          <div class="brand-title">Ekota Football Club</div>
+          <div class="brand-subtitle">Club Management Portal</div>
+        </div>
+      </div>
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-outline" style="color: #fff; border-color: rgba(255,255,255,0.5);">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page">
+    <p style="margin-bottom: 20px;">
+      <a class="button button-outline" href="{% url 'StaffHomepage' %}">Back to Dashboard</a>
+    </p>
+    <h1>Players</h1>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Add Player</h2>
+      <form method="post">
+        {% csrf_token %}
+
+        {{ player_form.as_p }}
+        {{ user_form.as_p }}
+
+        <button type="submit" class="button">Add Player</button>
+      </form>
+    </div>
+
+    <h2>Squad</h2>
+
+    <form method="get" style="margin-bottom: 16px;">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search by name or position">
+      <button type="submit" class="button">Search</button>
+    </form>
+
+    {% if players %}
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Username</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+            <tr>
+              <td>{{ player.first_name }} {{ player.last_name }}</td>
+              <td>{{ player.position }}</td>
+              <td>{{ player.user.username|default:"-" }}</td>
+              <td>
+                <a class="button button-outline" href="{% url 'UpdatePlayer' player.id %}">Update</a>
+                <a class="button button-outline" href="{% url 'PlayerStats' player.id %}">Stats</a>
+                <form method="post" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="deletePlayerID" value="{{ player.id }}">
+                  <button type="submit" class="button button-outline">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No players in the squad yet.</p>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>

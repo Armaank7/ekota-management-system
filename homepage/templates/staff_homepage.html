@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Staff Dashboard</title>
+</head>
+<body>
+
+  <!-- Top bar with club branding and logout button -->
+  <header class="topbar">
+    <div class="topbar-inner topbar-center">
+      <div class="topbar-logo">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+      </div>
+      <div class="topbar-title">
+        <div class="brand-title">Ekota <span class="brand-accent">Football Club</span></div>
+      </div>
+      <div class="topbar-side topbar-side-right">
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-dark">Logout</button>
+      </form>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main dashboard links for staff users -->
+  <div class="page">
+    <div class="dashboard-header">
+      <div>
+        <h1>Staff Dashboard</h1>
+        <p class="subtitle">Welcome back, {{ request.user.username }}</p>
+      </div>
+      <a class="button button-outline" href="{% url 'StaffProfile' %}">Update my profile</a>
+    </div>
+
+    <div class="dashboard-grid">
+      <a class="dashboard-card" href="{% url 'StaffPlayersHub' %}">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+          </svg>
+        </div>
+        <div>
+        <h2>Players</h2>
+        <p>Add, update, and remove squad members.</p>
+        </div>
+      </a>
+
+      <a class="dashboard-card" href="{% url 'StaffMatchesHub' %}">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div>
+        <h2>Matches</h2>
+        <p>Record fixtures, results, and match appearances.</p>
+        </div>
+      </a>
+
+      <a class="dashboard-card" href="{% url 'StaffTrainingHub' %}">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <div>
+        <h2>Training</h2>
+        <p>Schedule sessions and track attendance.</p>
+        </div>
+      </a>
+
+      <a class="dashboard-card" href="{% url 'StaffAnalytics' %}">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </div>
+        <div>
+        <h2>Analytics</h2>
+        <p>View club-wide performance stats and reports.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Simple footer shown at the bottom of the page -->
+  <footer class="page-footer">
+    <span>Ekota Football Club Management Portal</span>
+    <span>Made by Armaan Khan</span>
+  </footer>
+
+</body>
+</html>

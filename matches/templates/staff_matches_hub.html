@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Manage Matches</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+        <div class="brand">
+          <div class="brand-title">Ekota Football Club</div>
+          <div class="brand-subtitle">Club Management Portal</div>
+        </div>
+      </div>
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-outline" style="color: #fff; border-color: rgba(255,255,255,0.5);">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page">
+    <p style="margin-bottom: 20px;">
+      <a class="button button-outline" href="{% url 'StaffHomepage' %}">Back to Dashboard</a>
+    </p>
+    <h1>Matches</h1>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Add Match</h2>
+      <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="button">Add Match</button>
+      </form>
+    </div>
+
+    <h2>Fixtures & Results</h2>
+
+    <form method="get" style="margin-bottom: 16px;">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search by opponent, type or venue">
+      <button type="submit" class="button">Search</button>
+    </form>
+
+    {% if matches %}
+      <table>
+        <thead>
+          <tr>
+            <th>Opponent</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Venue</th>
+            <th>Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for match in matches %}
+            <tr>
+              <td>{{ match.opponent_name }}</td>
+              <td>{{ match.match_date|date:"d/m/Y" }}</td>
+              <td>{{ match.match_type }}</td>
+              <td>{{ match.venue_type }}</td>
+              <td>{{ match.our_score }} - {{ match.opponent_score }}</td>
+              <td>
+                <a class="button button-outline" href="{% url 'UpdateMatch' match.id %}">Update</a>
+                <a class="button button-outline" href="{% url 'MatchAppearances' match.id %}">Appearances</a>
+                <form method="post" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="deleteMatchID" value="{{ match.id }}">
+                  <button type="submit" class="button button-outline">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No matches recorded yet.</p>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>

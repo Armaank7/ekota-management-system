@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Player Stats</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+        <div class="brand">
+          <div class="brand-title">Ekota Football Club</div>
+          <div class="brand-subtitle">Club Management Portal</div>
+        </div>
+      </div>
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-outline" style="color: #fff; border-color: rgba(255,255,255,0.5);">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page">
+    <p><a href="{% url 'StaffPlayersHub' %}">&larr; Back to Players</a></p>
+    <h1>{{ player.first_name }} {{ player.last_name }}</h1>
+    <p class="subtitle">{{ player.position }}</p>
+
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Summary</h2>
+      <p>Goals: <strong>{{ total_goals }}</strong></p>
+      <p>Assists: <strong>{{ total_assists }}</strong></p>
+      <p>Appearances: <strong>{{ total_apps }}</strong></p>
+      <p>Training Attendance: <strong>{{ attendance_pct }}%</strong></p>
+    </div>
+
+    <h2>Match Appearances</h2>
+
+    {% if appearances %}
+      <table>
+        <thead>
+          <tr>
+            <th>Match</th>
+            <th>Date</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>Minutes Played</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appearance in appearances %}
+            <tr>
+              <td>{{ appearance.match.opponent_name }}</td>
+              <td>{{ appearance.match.match_date|date:"d/m/Y" }}</td>
+              <td>{{ appearance.goals }}</td>
+              <td>{{ appearance.assists }}</td>
+              <td>{{ appearance.minutes_played }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No match appearances recorded yet.</p>
+    {% endif %}
+
+    <h2 style="margin-top: 28px;">Training Attendance</h2>
+
+    {% if attendance %}
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Present</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in attendance %}
+            <tr>
+              <td>{{ record.training.training_date|date:"d/m/Y" }}</td>
+              <td>{{ record.training.training_type }}</td>
+              <td>{% if record.is_present %}Yes{% else %}No{% endif %}</td>
+              <td>{{ record.player_notes|default:"-" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No training attendance records yet.</p>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>

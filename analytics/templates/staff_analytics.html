@@ -1,0 +1,268 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Analytics</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img class="logo" src="{% static 'Ekota-logo.webp' %}" alt="Ekota FC">
+        <div class="brand">
+          <div class="brand-title">Ekota Football Club</div>
+          <div class="brand-subtitle">Club Management Portal</div>
+        </div>
+      </div>
+      <form action="{% url 'Logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button button-outline" style="color: #fff; border-color: rgba(255,255,255,0.5);">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="page">
+    <p style="margin-bottom: 20px;">
+      <a class="button button-outline" href="{% url 'StaffHomepage' %}">Back to Dashboard</a>
+    </p>
+    <h1>Analytics</h1>
+
+    <!-- Match Record -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Match Record</h2>
+      <p class="subtitle">Overall match results for the season.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Played</th>
+            <th>Won</th>
+            <th>Drawn</th>
+            <th>Lost</th>
+            <th>Goals Scored</th>
+            <th>Goals Conceded</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ total_played }}</td>
+            <td>{{ wins }}</td>
+            <td>{{ draws }}</td>
+            <td>{{ losses }}</td>
+            <td>{{ total_scored }}</td>
+            <td>{{ total_conceded }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Top Scorers -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Top Scorers</h2>
+      <p class="subtitle">Highest goalscorers in the squad.</p>
+      {% if top_scorers %}
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Goals</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for scorer in top_scorers %}
+              <tr>
+                <td>{{ scorer.rank }}</td>
+                <td>{{ scorer.player__first_name }} {{ scorer.player__last_name }}</td>
+                <td>{{ scorer.total_goals }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No goal data recorded yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Top Assisters -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Top Assisters</h2>
+      <p class="subtitle">Players with the most assists.</p>
+      {% if top_assisters %}
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Assists</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for assister in top_assisters %}
+              <tr>
+                <td>{{ assister.rank }}</td>
+                <td>{{ assister.player__first_name }} {{ assister.player__last_name }}</td>
+                <td>{{ assister.total_assists }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No assist data recorded yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Most Appearances -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Most Appearances</h2>
+      <p class="subtitle">Players with the most match appearances.</p>
+      {% if most_appearances %}
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Appearances</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in most_appearances %}
+              <tr>
+                <td>{{ entry.rank }}</td>
+                <td>{{ entry.player__first_name }} {{ entry.player__last_name }}</td>
+                <td>{{ entry.total_apps }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No appearance data recorded yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Charts -->
+    <h2 style="margin-top: 36px;">Charts</h2>
+
+    <!-- Players by Position -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Players by Position</h2>
+      <p class="subtitle">View all players in your squad by position.</p>
+      <div style="display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
+        <canvas id="positionChart" style="max-width: 400px; max-height: 400px;"></canvas>
+        <div>
+          <p style="margin-top: 0;"><strong>Total Players Registered:</strong> {{ total_players }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Goals Scored Per Match by Month -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Average Goals Scored Per Match</h2>
+      <p class="subtitle">Average goals scored per match in each month.</p>
+      <canvas id="goalsChart" style="max-height: 300px;"></canvas>
+    </div>
+
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Average Goals Conceded Per Match</h2>
+      <p class="subtitle">Average goals conceded per match in each month.</p>
+      <canvas id="concededChart" style="max-height: 300px;"></canvas>
+    </div>
+
+    <!-- Training Attendance -->
+    <div class="role-box" style="margin-bottom: 28px;">
+      <h2>Training Attendance</h2>
+      <p class="subtitle">Training attendance rate for each player.</p>
+      <canvas id="attendanceChart" style="max-height: 300px;"></canvas>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Players by Position pie chart
+    new Chart(document.getElementById('positionChart'), {
+      type: 'pie',
+      data: {
+        labels: [{% for p in position_counts %}'{{ p.position }}',{% endfor %}],
+        datasets: [{
+          data: [{% for p in position_counts %}{{ p.count }},{% endfor %}],
+          backgroundColor: ['#f07a00', '#f2b134', '#111111', '#555555']
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    // Average Goals Scored Per Match by Month bar chart
+    new Chart(document.getElementById('goalsChart'), {
+      type: 'bar',
+      data: {
+        labels: [{% for month in monthly_goals %}'{{ month.month|date:"M Y" }}',{% endfor %}],
+        datasets: [{
+          label: 'Average Goals',
+          data: [{% for month in monthly_goals %}{{ month.avg_goals|floatformat:1 }},{% endfor %}],
+          backgroundColor: '#f07a00'
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    // Average Goals Conceded Per Match by Month bar chart
+    new Chart(document.getElementById('concededChart'), {
+      type: 'bar',
+      data: {
+        labels: [{% for month in monthly_goals_conceded %}'{{ month.month|date:"M Y" }}',{% endfor %}],
+        datasets: [{
+          label: 'Average Goals Conceded',
+          data: [{% for month in monthly_goals_conceded %}{{ month.avg_goals_conceded|floatformat:1 }},{% endfor %}],
+          backgroundColor: '#f07a00'
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    // Training Attendance bar chart
+    new Chart(document.getElementById('attendanceChart'), {
+      type: 'bar',
+      data: {
+        labels: [{% for a in attendance_rates %}'{{ a.name }}',{% endfor %}],
+        datasets: [{
+          label: 'Attendance %',
+          data: [{% for a in attendance_rates %}{{ a.pct }},{% endfor %}],
+          backgroundColor: '#f07a00'
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { callback: function(v) { return v + '%'; } } }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
