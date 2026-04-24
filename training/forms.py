@@ -22,6 +22,7 @@ class TrainingAttendanceForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["player"].empty_label = "Select a player"
         # Unticked means absent, so the extra blank row starts empty
         if not self.instance.pk:
             self.fields["is_present"].initial = False

@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Delete Match</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Delete Match</h1>
+    <p>Are you sure you want to delete the match against {{ match.opponent_name }}?</p>
+    <p>This action cannot be undone.</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="button">Yes, delete</button>
+      <a class="button button-outline" href="{% url 'StaffMatchesHub' %}">Cancel</a>
+    </form>
+  </div>
+</body>
+</html>

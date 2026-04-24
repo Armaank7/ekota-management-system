@@ -25,7 +25,8 @@ def staff_register(request):
 
             user = form.save()
             Staff.objects.create(user=user)
-            return redirect("LandingPage")
+            messages.success(request, "Account created successfully!")
+            return redirect("StaffRegister")
     else:
         form = StaffRegisterForm()
 

@@ -27,14 +27,6 @@ def staff_matches_hub(request):
                 messages.success(request, "Match added successfully!")
                 return redirect("StaffMatchesHub")
 
-        # DELETE MATCH
-        elif "deleteMatchID" in request.POST:
-            match_id = request.POST.get("deleteMatchID")
-            match = Match.objects.get(id=match_id)
-            match.delete()
-            messages.success(request, "Match deleted")
-            return redirect("StaffMatchesHub")
-
     # Order by match date
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     matches = Match.objects.filter(
@@ -70,7 +62,22 @@ def update_match(request, match_id):
     return render(request, "update_match.html", {"match": match, "form": form})
 
 
-# Adds, updates and deletes player appearance records for one match
+# DELETE MATCH
+@login_required
+@staff_required
+def delete_match(request, match_id):
+
+    match = Match.objects.get(id=match_id)
+
+    if request.method == "POST":
+        match.delete()
+        messages.success(request, "Match deleted")
+        return redirect("StaffMatchesHub")
+
+    return render(request, "delete_match.html", {"match": match})
+
+
+# Adds, updates and deletes player appearance records for one match - MATCH APPEARANCES
 @login_required
 @staff_required
 def match_appearances(request, match_id):

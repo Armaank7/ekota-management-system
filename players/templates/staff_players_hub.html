@@ -75,11 +75,7 @@
               <td>
                 <a class="button button-outline" href="{% url 'UpdatePlayer' player.id %}">Update</a>
                 <a class="button button-outline" href="{% url 'PlayerStats' player.id %}">Stats</a>
-                <form method="post" style="display: inline;">
-                  {% csrf_token %}
-                  <input type="hidden" name="deletePlayerID" value="{{ player.id }}">
-                  <button type="submit" class="button button-outline">Delete</button>
-                </form>
+                <a class="button button-outline" href="{% url 'DeletePlayer' player.id %}">Delete</a>
               </td>
             </tr>
           {% endfor %}

@@ -48,18 +48,7 @@ def staff_players_hub(request):
                     messages.success(request, "Player created successfully!")
                     return redirect("StaffPlayersHub")
 
-        # DELETE PLAYER
-        elif "deletePlayerID" in request.POST:
-            player_id = request.POST.get("deletePlayerID")
-            player = Player.objects.get(id=player_id)
-            if player.user:
-                player.user.delete()  # CASCADE deletes the Player too
-            else:
-                player.delete()
-            messages.success(request, "Player deleted")
-            return redirect("StaffPlayersHub")
-
-    # Order by player ID
+    # SEARCH and Order by player ID
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     players = Player.objects.filter(
         Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(position__icontains=q)
@@ -89,3 +78,21 @@ def update_player(request, player_id):
         form = PlayerForm(instance=player)
 
     return render(request, "update_player.html", {"player": player, "form": form})
+
+
+# DELETE PLAYER
+@login_required
+@staff_required
+def delete_player(request, player_id):
+
+    player = Player.objects.get(id=player_id)
+
+    if request.method == "POST":
+        if player.user:
+            player.user.delete()  # CASCADE deletes the Player too
+        else:
+            player.delete()
+        messages.success(request, "Player deleted")
+        return redirect("StaffPlayersHub")
+
+    return render(request, "delete_player.html", {"player": player})

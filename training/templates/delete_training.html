@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'base_.css' %}">
+  <title>Delete Training</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Delete Training Session</h1>
+    <p>Are you sure you want to delete the training session on {{ training.training_date|date:"d/m/Y" }}?</p>
+    <p>This action cannot be undone.</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="button">Yes, delete</button>
+      <a class="button button-outline" href="{% url 'StaffTrainingHub' %}">Cancel</a>
+    </form>
+  </div>
+</body>
+</html>

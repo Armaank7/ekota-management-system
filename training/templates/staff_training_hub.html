@@ -76,11 +76,7 @@
               <td>
                 <a class="button button-outline" href="{% url 'UpdateTraining' session.id %}">Update</a>
                 <a class="button button-outline" href="{% url 'TrainingAttendance' session.id %}">Attendance</a>
-                <form method="post" style="display: inline;">
-                  {% csrf_token %}
-                  <input type="hidden" name="deleteTrainingID" value="{{ session.id }}">
-                  <button type="submit" class="button button-outline">Delete</button>
-                </form>
+                <a class="button button-outline" href="{% url 'DeleteTraining' session.id %}">Delete</a>
               </td>
             </tr>
           {% endfor %}

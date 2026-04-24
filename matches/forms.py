@@ -23,6 +23,7 @@ class MatchAppearanceForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["player"].empty_label = "Select a player"
         # Clears the default values on the extra blank row in the formset
         if not self.instance.pk:
             self.fields["goals"].initial = None

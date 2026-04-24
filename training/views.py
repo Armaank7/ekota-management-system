@@ -23,14 +23,6 @@ def staff_training_hub(request):
                 messages.success(request, "Training session added successfully!")
                 return redirect("StaffTrainingHub")
 
-        # DELETE TRAINING SESSION
-        elif "deleteTrainingID" in request.POST:
-            training_id = request.POST.get("deleteTrainingID")
-            training = Training.objects.get(id=training_id)
-            training.delete()
-            messages.success(request, "Training session deleted")
-            return redirect("StaffTrainingHub")
-
     # Order by training date
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     sessions = Training.objects.filter(
@@ -62,7 +54,22 @@ def update_training(request, training_id):
     return render(request, "update_training.html", {"training": training, "form": form})
 
 
-# Adds, updates and deletes attendance records for one training session
+# DELETE TRAINING SESSION
+@login_required
+@staff_required
+def delete_training(request, training_id):
+
+    training = Training.objects.get(id=training_id)
+
+    if request.method == "POST":
+        training.delete()
+        messages.success(request, "Training session deleted")
+        return redirect("StaffTrainingHub")
+
+    return render(request, "delete_training.html", {"training": training})
+
+
+# Adds, updates and deletes attendance records for one training session - TRAINING ATTENDANCE
 @login_required
 @staff_required
 def training_attendance(request, training_id):
