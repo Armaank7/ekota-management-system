@@ -4,6 +4,7 @@ from django.contrib.auth import login as auth_login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
+from django.db import transaction
 from django_ratelimit.decorators import ratelimit
 from .forms import StaffRegisterForm
 from .models import Staff, Player
@@ -14,6 +15,17 @@ from django.contrib.auth import logout
 
 # Create your views here.
 
+# Works out the next staff ID (STF001, STF002...) so every staff record gets a unique value
+def generate_staff_id():
+    highest = 0
+    for sid in Staff.objects.filter(staffID__startswith="STF").values_list("staffID", flat=True):
+        try:
+            highest = max(highest, int(sid[3:]))
+        except ValueError:
+            pass
+    return "STF" + str(highest + 1).zfill(3)
+
+
 # Staff registration page for creating staff logins
 def staff_register(request):
     if request.method == "POST":
@@ -23,8 +35,10 @@ def staff_register(request):
                 messages.error(request, "Invalid access code")
                 return render(request, "staff_register.html", {"form": form})
 
-            user = form.save()
-            Staff.objects.create(user=user)
+            # Both records are saved together, so a failure never leaves a user without a staff profile
+            with transaction.atomic():
+                user = form.save()
+                Staff.objects.create(user=user, staffID=generate_staff_id())
             messages.success(request, "Account created successfully!")
             return redirect("StaffRegister")
     else:
